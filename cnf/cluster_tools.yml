@@ -1,47 +1,48 @@
-apiVersion: apps/v1
-kind: DaemonSet
+apiVersion: apps/v1  # 使用的 Kubernetes API 版本为 apps/v1
+kind: DaemonSet  # 创建的 Kubernetes 对象类型为 DaemonSet
 metadata:
-    name: cluster-tools
+    name: cluster-tools  # DaemonSet 的名称为 cluster-tools
 spec:
   selector:
     matchLabels:
-      name: cluster-tools
+      name: cluster-tools  # 选择要控制的 Pod 的标签为 name: cluster-tools
   template:
     metadata:
       labels:
-        name: cluster-tools
+        name: cluster-tools  # 创建的 Pod 的标签为 name: cluster-tools
     spec:
-      hostPID: true
-      hostNetwork: true
-      dnsPolicy: ClusterFirstWithHostNet
+      hostPID: true  # 允许容器使用宿主机的 PID 命名空间
+      hostNetwork: true  # 允许容器使用宿主机的网络命名空间
+      dnsPolicy: ClusterFirstWithHostNet  # 设置 DNS 解析策略为优先使用集群 DNS，但仍然使用宿主机网络
       containers:
-        - name: cluster-tools
-          image: conformance/cluster-tools:v1.0.3
-          imagePullPolicy: Always
-          command: ["/bin/sh"]
-          args: ["-c", "sleep infinity"]
+        - name: cluster-tools  # 容器的名称为 cluster-tools
+          image: conformance/cluster-tools:v1.0.3  # 容器镜像为 conformance/cluster-tools:v1.0.3
+          imagePullPolicy: Always  # 始终拉取最新的镜像
+          command: ["/bin/sh"]  # 容器启动时执行的命令为 /bin/sh
+          args: ["-c", "sleep infinity"]  # 参数为 "-c sleep infinity"
           volumeMounts:
-          - mountPath: /run/containerd/
-            name: containerd-volume
-          - mountPath: /run/systemd/
-            name: systemd
-            readOnly: true
-          - mountPath: /proc
-            name: proc
-          - mountPath: /run/dockershim.sock
-            name: dockerd-volume
+            - mountPath: /run/containerd/  # 挂载宿主机的 /var/run/containerd/ 目录到容器的 /run/containerd/ 目录
+              name: containerd-volume
+            - mountPath: /run/systemd/  # 挂载宿主机的 /run/systemd/ 目录到容器的 /run/systemd/ 目录，并设置为只读模式
+              name: systemd
+              readOnly: true
+            - mountPath: /proc  # 挂载宿主机的 /proc 目录到容器的 /proc 目录
+              name: proc
+            - mountPath: /run/dockershim.sock  # 挂载宿主机的 /run/dockershim.sock 文件到容器的 /run/dockershim.sock 文件
+              name: dockerd-volume
           securityContext:
-            privileged: true
+            privileged: true  # 设置容器为特权模式
       volumes:
-      - name: containerd-volume
-        hostPath:
-          path: /var/run/containerd/
-      - name: proc
-        hostPath:
-          path: /proc
-      - name: dockerd-volume
-        hostPath:
-          path: /run/dockershim.sock
-      - name: systemd
-        hostPath:
-          path: /run/systemd
+        - name: containerd-volume  # 容器卷名为 containerd-volume
+          hostPath:
+            path: /var/run/containerd/  # 主机路径为 /var/run/containerd/
+        - name: proc  # 容器卷名为 proc
+          hostPath:
+            path: /proc  # 主机路径为 /proc
+        - name: dockerd-volume  # 容器卷名为 dockerd-volume
+          hostPath:
+            path: /run/dockershim.sock  # 主机路径为 /run/dockershim.sock
+        - name: systemd  # 容器卷名为 systemd
+          hostPath:
+            path: /run/systemd  # 主机路径为 /run/systemd
+
