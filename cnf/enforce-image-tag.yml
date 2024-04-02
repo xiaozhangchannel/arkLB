@@ -1,10 +1,15 @@
-apiVersion: constraints.gatekeeper.sh/v1beta1
-kind: RequireTags
+apiVersion: constraints.gatekeeper.sh/v1beta1  # Gatekeeper API版本
+kind: RequireTags  # 约束类型为RequireTags
+
 metadata:
-  name: block-latest-tag
+  name: block-latest-tag  # 约束的名称为block-latest-tag
+
 spec:
-  match:
-    kinds:
-      - apiGroups: [""]
-        kinds: ["Pod"]
+  match:  # 匹配条件开始
+    kinds:  # 匹配资源类型
+      - apiGroups: [""]  # 匹配不带 API 组的资源
+        kinds: ["Pod"]  # 匹配资源类型为 Pod
+
+# 注释: 该约束指定了要匹配的资源类型为不带 API 组的 Pod 资源，并且约束的名称为block-latest-tag
+
       
