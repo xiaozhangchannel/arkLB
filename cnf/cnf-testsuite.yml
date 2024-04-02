@@ -1,17 +1,18 @@
----
-allowlist_helm_chart_container_names: [arklb, nginx] # [LIST_OF_CONTAINERS_ALLOWED_TO_RUN_PRIVLIDGED]
-helm_chart: arklb/arklb # PUBLISHED_CNFS_HELM_CHART_REPO/NAME ; or
-helm_repository: # CONFIGURATION OF HELM REPO - ONLY NEEDED WHEN USING helm_chart 
-  name: arklb # HELM_CHART_REPOSITORY_NAME
-  repo_url: https://ark-7.github.io/arkLB-helm/ # HELM_CHART_REPOSITORY_URL
+allowlist_helm_chart_container_names: [arklb, nginx]  # 允许以特权模式运行的容器名称列表
 
-release_name: arklb # DESIRED_HELM_RELEASE_NAME
+helm_chart: arklb/arklb  # 发布的 Helm Chart 名称，格式为 PUBLISHED_CNFS_HELM_CHART_REPO/NAME
+# or
+helm_repository:  # Helm 仓库的配置信息，仅在使用 helm_chart 时需要配置
+  name: arklb  # Helm Chart 仓库名称
+  repo_url: https://ark-7.github.io/arkLB-helm/  # Helm Chart 仓库的 URL
 
-helm_install_namespace: ark-cnf # Installs the CNF to it's own namespace and not in the default namespace
+release_name: arklb  # Helm 发布的名称
+
+helm_install_namespace: ark-cnf  # 将 CNF 安装到自己的命名空间而不是默认命名空间
 
 container_names: 
   - name: arklb
-    rolling_update_test_tag: "v0.1.10"
-    rolling_downgrade_test_tag: "v0.1.9"
-    rolling_version_change_test_tag: latest
-    rollback_from_tag: latest
+    rolling_update_test_tag: "v0.1.10"  # 用于滚动更新测试的标签
+    rolling_downgrade_test_tag: "v0.1.9"  # 用于滚动降级测试的标签
+    rolling_version_change_test_tag: latest  # 用于滚动版本更改测试的标签
+    rollback_from_tag: latest  # 回滚时使用的标签
