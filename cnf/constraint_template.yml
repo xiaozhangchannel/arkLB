@@ -1,27 +1,33 @@
 apiVersion: templates.gatekeeper.sh/v1beta1
 kind: ConstraintTemplate
 metadata:
-  name: requiretags
+  name: requiretags  # 约束模板的名称
+
 spec:
   crd:
     spec:
       names:
-        kind: RequireTags
+        kind: RequireTags  # 自定义资源的名称
+
   targets:
-    - target: admission.k8s.gatekeeper.sh
+    - target: admission.k8s.gatekeeper.sh  # 目标是 Gatekeeper 的 Admission Controller
+
       rego: |
-        package requiretags
-        violation[{"msg": msg, "details": {}}]{
-          input.review.kind.kind == "Pod"
-          image := input.review.object.spec.containers[_].image
-          ensure(image)
-          msg := sprintf("Violation for Pod %v, it uses an image tag that is not versioned", [input.review.object.metadata.name])
+        package requiretags  # 定义 Rego 策略包名
+
+        violation[{"msg": msg, "details": {}}] {  # 定义违规事件和相关信息
+          input.review.kind.kind == "Pod"  # 规则适用于类型为 Pod 的资源
+          image := input.review.object.spec.containers[_].image  # 获取 Pod 中的容器镜像列表
+          ensure(image)  # 执行 ensure 函数来检查容器镜像标签的版本化情况
+          msg := sprintf("Violation for Pod %v, it uses an image tag that is not versioned", [input.review.object.metadata.name])  # 违规消息的格式化
+
         }
-        
-        ensure(image) {
+
+        ensure(image) {  # 检查容器镜像标签是否包含 ":latest"，如果包含则不符合要求
           contains(image, ":latest")
         }
-        ensure(image) {
+
+        ensure(image) {  # 检查容器镜像标签是否不包含 ":"，如果不包含则不符合要求
           not contains(image,":")
         }
 
